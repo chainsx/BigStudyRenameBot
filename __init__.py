@@ -72,7 +72,7 @@ async def hw_dept_test_handle(bot: Bot, event: Event, state: T_State):
     ocr_data = ocr['texts']
     season_index = 0
     for x in range(len(ocr_data)):
-        if len(re.findall('第.+季.+第.+期',ocr_data[x]['text'])) != 0:
+        if len(re.findall('第.+季.+',ocr_data[x]['text'])) != 0:
             user_real_name = ocr_data[x+1]['text']
             season_index = x
             break
