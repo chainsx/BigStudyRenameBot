@@ -134,9 +134,19 @@ youth_study_asst_index = on_command("大学习查询", permission=GROUP, priorit
 
 @youth_study_asst_index.handle()
 async def youth_study_asst_index_handle(bot: Bot, event: Event, state: T_State):
-    uid = event.get_user_id()
     msg = Message(MessageSegment.at(uid))
-    msg.append('因为我不是团支书，暂时不想开发催交截图的功能')
+    user_id = event.get_user_id()
+    group_id_dist = pattern_event.findall(event_id)
+    group_id = group_id_dist[0][6:-1]
+    try:
+        member_list = await bot.call_api("get_group_member_info", group_id=group_id, user_id=user_id, no_cache=false)
+    except Exception as e:
+        print(e)
+        msg.append('获取群信息失败')
+        await youth_study_asst_upload.finish(msg)
+    print(str(member_list))
+    print(type(msg))
+    #msg.append('因为我不是团支书，暂时不想开发催交截图的功能')
     await youth_study_asst_index.finish(msg)
 
 
