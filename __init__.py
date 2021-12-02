@@ -137,6 +137,7 @@ async def youth_study_asst_index_handle(bot: Bot, event: Event, state: T_State):
     user_id = event.get_user_id()
     msg = Message(MessageSegment.at(user_id))
     pattern_event = re.compile('group_.+_')
+    event_id = event.get_session_id()
     group_id_dist = pattern_event.findall(event_id)
     group_id = group_id_dist[0][6:-1]
     try:
