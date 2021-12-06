@@ -12,11 +12,10 @@ youth_study_asst_upload = on_command("大学习上传", permission=GROUP, priori
 
 @youth_study_asst_upload.handle()
 async def hw_dept_test_handle(bot: Bot, event: Event, state: T_State):
-    global files, ocr, user_real_name, member_name, response
+    global files, ocr, user_real_name, member_name, response , ocr_img_id
     path = os.getcwd()
     uid = event.get_user_id()
     msg = Message(MessageSegment.at(uid))
-    # 提取url
     url = str(event.get_message())
     event_id = event.get_session_id()
     pattern_event = re.compile('group_.+_')
@@ -44,7 +43,6 @@ async def hw_dept_test_handle(bot: Bot, event: Event, state: T_State):
         print(e)
         msg.append('错误: 未检测到图片')
         await youth_study_asst_upload.finish(msg)
-    # 下载图片并重命名
     headers = {
         'Host': 'gchat.qpic.cn',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36 Edg/94.0.992.38'
@@ -67,8 +65,6 @@ async def hw_dept_test_handle(bot: Bot, event: Event, state: T_State):
         isbigstudy = 0
         msg.append('检测到图片不是青年大学习截图, 请检查所上传图片')
         await youth_study_asst_upload.finish(msg)
-#    match = re.findall('第.+季.+第.+期)', str(ocr))
-#    print('!!!' +  str(match))
     ocr_data = ocr['texts']
     season_index = 0
     for x in range(len(ocr_data)):
@@ -134,11 +130,11 @@ youth_study_asst_index = on_command("大学习查询", permission=GROUP, priorit
 
 @youth_study_asst_index.handle()
 async def youth_study_asst_index_handle(bot: Bot, event: Event, state: T_State):
+    global member_list, root_file_list, file_list, folder_id
     user_id = event.get_user_id()
     msg = Message(MessageSegment.at(user_id))
     season_data = str(event.get_message())
     folder_id_str = season_data
-
     pattern_event = re.compile('group_.+_')
     event_id = event.get_session_id()
     group_id_dist = pattern_event.findall(event_id)
@@ -149,7 +145,6 @@ async def youth_study_asst_index_handle(bot: Bot, event: Event, state: T_State):
         print(e)
         msg.append('获取群信息失败')
         await youth_study_asst_upload.finish(msg)
-#    print(str(member_list))
     member_list_nickname=[]
     member_list_num=[]
     for x in range(len(member_list)):
@@ -163,7 +158,6 @@ async def youth_study_asst_index_handle(bot: Bot, event: Event, state: T_State):
         msg.append('查询群文件失败')
         await youth_study_asst_upload.finish(msg)
     root_file_data = root_file_list['folders']
-    global folder_id
     for i in range(len(root_file_data)):
         file_tmp = root_file_data[i]
         if file_tmp['folder_name'] == folder_id_str:
@@ -176,7 +170,7 @@ async def youth_study_asst_index_handle(bot: Bot, event: Event, state: T_State):
         await youth_study_asst_upload.finish(msg)
     file_list_data = file_list['files']
     member_list_tmp = member_list_nickname
-    if folder_id == None:
+    if folder_id is None:
         msg.append('指令有误，请在指令中包含期数')
         await youth_study_asst_upload.finish(msg)
     for j in range(len(file_list_data)):
@@ -196,7 +190,6 @@ async def youth_study_asst_index_handle(bot: Bot, event: Event, state: T_State):
     msg.append('请以下同学尽快上传大学习截图，如果已经上传，请检查群昵称是否为学号加姓名以及已经上传文件的文件名是否对应')
     for n in range(len(tell_list)):
         msg.append(MessageSegment.at(tell_list[n]))
-    #msg.append('因为我不是团支书，暂时不想开发催交截图的功能')
     await youth_study_asst_index.finish(msg)
 
 
@@ -206,5 +199,10 @@ youth_study_asst_help = on_command("help", permission=GROUP, priority=3)
 async def youth_study_asst_help_handle(bot: Bot, event: Event, state: T_State):
     uid = event.get_user_id()
     msg = Message(MessageSegment.at(uid))
-    msg.append('我才不会告诉你我能干什么')
+    msg.append('支持功能：\n\
+  1，大学习上传：\n\
+    指令格式：大学习上传+图片\n\
+  2，大学习查询：\n\
+    指令格式：大学习查询+文件夹名称\n\
+  注意：机器人要有管理员权限，同时为了方便需要大家将群昵称改为学号加姓名的形式')
     await youth_study_asst_help.finish(msg)
