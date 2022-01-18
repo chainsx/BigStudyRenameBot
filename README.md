@@ -1,7 +1,8 @@
 # BigStudyRenameBot
-基于 cqhttp + nonebot2 的青年大学习重命名上传指定文件夹机器人
+采用木兰宽松许可证v2发行的基于 cqhttp + nonebot2 的青年大学习重命名上传指定文件夹机器人
 
 请自行搭建 cqhttp + nonebot2 的运行环境，本机器人将作为 nonebot2 的插件进行加载。
+注意：其中某些配置信息需要手动填写
 
 功能：
 
